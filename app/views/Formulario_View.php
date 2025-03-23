@@ -11,7 +11,8 @@ $area = isset($_GET['area']) ? htmlspecialchars($_GET['area']) : 'Área Desconoc
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="../../public/css/styles.css" rel="stylesheet">
 </head>
-<body class="d-flex">
+<!-- Cambiamos el fondo del body a gris (#e0e0e0) -->
+<body class="d-flex" style="background-color: #e0e0e0;">
   <header class="text-center">
     <img src="../../public/img/logoAIFA.png" alt="Logo AIFA" class="header-logo">
   </header>
@@ -20,7 +21,8 @@ $area = isset($_GET['area']) ? htmlspecialchars($_GET['area']) : 'Área Desconoc
     <div class="container main-content">
       <h1 class="fw-bold text-center">Registro de Incidencias<br><?php echo $area; ?></h1>
       
-      <div class="btn-container left">
+      <!-- Modificamos el contenedor de formulario para que tenga fondo blanco -->
+      <div class="btn-container left" style="background-color: #fff;">
         <form id="reporteForm" action="../../app/controllers/GuardarReporte_Controller.php" method="POST" enctype="multipart/form-data" novalidate>
           <div class="mb-3">
             <label for="nombre" class="form-label">Nombre (Opcional):</label>
@@ -69,10 +71,30 @@ $area = isset($_GET['area']) ? htmlspecialchars($_GET['area']) : 'Área Desconoc
     <p>&copy; <?php echo date("Y"); ?> Aeropuerto Internacional Felipe Ángeles</p>
   </footer>
   
+  <!-- Modal de Confirmación -->
+  <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="confirmationModalLabel">Reporte enviado con éxito</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+          ¡Agradecemos tu valioso tiempo para compartir tu opinión con nosotros!
+        </div>
+        <div class="modal-footer bg-light">
+          <button type="button" id="confirmSubmit" class="btn btn-primary">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     document.getElementById('reporteForm').addEventListener('submit', function(event) {
+      event.preventDefault(); // Prevenir envío inmediato
+      
       let tipoReporte = document.querySelector('input[name="tipo_reporte"]:checked');
       let descripcion = document.getElementById('descripcion').value.trim();
       let telefono = document.getElementById('telefono').value.trim();
@@ -116,9 +138,17 @@ $area = isset($_GET['area']) ? htmlspecialchars($_GET['area']) : 'Área Desconoc
       }
       
       if (!isValid) {
-        event.preventDefault();
+        return; // No se envía el formulario si hay errores
       } else {
-        alert('¡Agradecemos tu valioso tiempo para compartir tu opinión con nosotros!');
+        // Mostrar el modal de confirmación
+        var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+        confirmationModal.show();
+        
+        // Al hacer clic en "Aceptar" se envía el formulario
+        document.getElementById('confirmSubmit').addEventListener('click', function() {
+          confirmationModal.hide();
+          document.getElementById('reporteForm').submit();
+        }, {once: true});
       }
     });
   </script>

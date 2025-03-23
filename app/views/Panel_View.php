@@ -1,4 +1,32 @@
-<?php require_once __DIR__ . "/../../app/controllers/Panel_Controller.php"; ?>
+<?php
+// Configurar parámetros de la cookie antes de iniciar la sesión
+session_set_cookie_params([
+    'lifetime' => 0,          // La sesión dura hasta que se cierra el navegador
+    'path'     => '/',
+    'domain'   => '',         // Configura el dominio si es necesario
+    'secure'   => isset($_SERVER['HTTPS']), // Solo se enviará por HTTPS si está activo
+    'httponly' => true,
+    'samesite' => 'Strict'
+]);
+
+session_start();
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: Login_View.php");
+    exit();
+}
+
+if (isset($_SESSION['LAST_ACTIVITY']) && (time() - $_SESSION['LAST_ACTIVITY'] > 300)) {
+    session_unset();
+    session_destroy();
+    header("Location: Login_View.php");
+    exit();
+}
+
+$_SESSION['LAST_ACTIVITY'] = time();
+
+require_once __DIR__ . "/../../app/controllers/Panel_Controller.php";
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -16,6 +44,30 @@
   <!-- Hoja de estilos global -->
   <link href="../../public/css/styles.css" rel="stylesheet">
   <link rel="icon" href="../../public/img/iconAIFA.png" type="image/png">
+  
+  <!-- Estilos específicos para este panel -->
+  <style>
+    /* Transición para los botones */
+    .btn-access {
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    /* Reducir un poco más el tamaño de los botones solo en este panel */
+    .panel-container .btn-access {
+      font-size: 0.9rem !important;
+      padding: 0.3rem 0.6rem !important;
+      width: 140px !important;
+      white-space: nowrap !important;
+    }
+    /* Efecto hover en las filas de la tabla: color visible */
+    .table-container table tbody tr:hover {
+      background-color: #ced4da !important;
+    }
+    /* Ampliar la columna Folio para que se muestre en una sola línea */
+    .col-folio {
+      width: 15% !important;
+      white-space: nowrap !important;
+    }
+  </style>
 </head>
 <body class="d-flex flex-column min-vh-100 bg-light">
   <!-- Header global -->
@@ -27,12 +79,13 @@
   <main class="flex-grow-1">
     <div class="container main-content panel-container">
       <h1 class="fw-bold text-center">Panel de Reportes</h1>
+      <h3 class="fw-bold text-center">Buzón Interno de la Dirección de Operación</h3>
 
       <div class="d-flex justify-content-end mb-3">
-        <a href="/NUEVA_ESTRUCTURA/app/controllers/ExportarReporte_Controller.php" id="exportExcel" class="btn btn-success me-2">
+        <a href="/NUEVA_ESTRUCTURA/app/controllers/ExportarReporte_Controller.php" id="exportExcel" class="btn btn-success me-2 btn-access">
           📊 Exportar a Excel
         </a>
-        <a href="/NUEVA_ESTRUCTURA/app/controllers/Logout_Controller.php" class="btn btn-danger">
+        <a href="/NUEVA_ESTRUCTURA/app/controllers/Logout_Controller.php" class="btn btn-danger btn-access">
           🔒 Cerrar Sesión
         </a>
       </div>
@@ -42,7 +95,7 @@
         <table id="reportTable" class="table table-striped table-bordered">
           <thead class="table-dark">
             <tr>
-              <th>Folio</th>
+              <th class="col-folio">Folio</th>
               <th>Tipo de Reporte</th>
               <th class="col-descripcion">Descripción</th>
               <th>Imagen</th>
@@ -54,22 +107,16 @@
           <tbody>
             <?php foreach ($reportes as $reporte): ?>
               <tr>
-                <td><?php echo htmlspecialchars($reporte['folio']); ?></td>
+                <td class="col-folio"><?php echo htmlspecialchars($reporte['folio']); ?></td>
                 <td><?php echo htmlspecialchars($reporte['tipo_reporte']); ?></td>
-                <td class="col-descripcion">
-                  <?php echo nl2br(htmlspecialchars($reporte['descripcion'])); ?>
-                </td>
+                <td class="col-descripcion"><?php echo nl2br(htmlspecialchars($reporte['descripcion'])); ?></td>
                 <td>
                   <?php 
                     if (!empty($reporte['imagen_hallazgo'])) {
                       $nombre_archivo = basename($reporte['imagen_hallazgo']);
                       $ruta_imagen = "../../admin/evidencias_usuarios/" . $nombre_archivo;
                       if (file_exists(__DIR__ . "/../../admin/evidencias_usuarios/" . $nombre_archivo)) {
-                        echo '<img src="'. htmlspecialchars($ruta_imagen) .'" 
-                                 class="img-thumbnail"
-                                 width="50" height="50"
-                                 alt="Evidencia"
-                                 onclick="showImage(\''. htmlspecialchars($ruta_imagen) .'\')">';
+                        echo '<img src="'. htmlspecialchars($ruta_imagen) .'" class="img-thumbnail" width="50" height="50" alt="Evidencia" onclick="showImage(\''. htmlspecialchars($ruta_imagen) .'\')">';
                       } else {
                         echo '<span class="text-danger">Imagen no encontrada</span>';
                       }
@@ -79,10 +126,7 @@
                   ?>
                 </td>
                 <td class="text-center">
-                  <button class="btn btn-link p-0 toggle-status" 
-                          data-folio="<?php echo $reporte['folio']; ?>" 
-                          data-status="<?php echo strtolower($reporte['estado']); ?>" 
-                          onclick="toggleStatus(this)">
+                  <button class="btn btn-link p-0 toggle-status btn-access" data-folio="<?php echo $reporte['folio']; ?>" data-status="<?php echo strtolower($reporte['estado']); ?>" onclick="toggleStatus(this)">
                     <?php if (strtolower($reporte['estado']) == 'atendido'): ?>
                       <i class="fas fa-check-circle text-success" title="Atendido"></i>
                     <?php else: ?>
@@ -90,9 +134,7 @@
                     <?php endif; ?>
                   </button>
                 </td>
-                <td class="col-usuario">
-                  <?php echo nl2br(htmlspecialchars($reporte['nombre_usuario'])); ?>
-                </td>
+                <td class="col-usuario"><?php echo nl2br(htmlspecialchars($reporte['nombre_usuario'])); ?></td>
                 <td><?php echo htmlspecialchars($reporte['tel_usuario']); ?></td>
               </tr>
             <?php endforeach; ?>
@@ -131,12 +173,15 @@
   <script>
     $(document).ready(function() {
       $('#reportTable').DataTable({
+        dom: '<"row g-0" <"col-sm-6"l> <"col-sm-6 text-end"f>>' +
+             'rt' +
+             '<"row g-0" <"col-sm-6"i> <"col-sm-6 text-end"p>>',
         language: {
           "emptyTable": "No hay información",
-          "info": "Mostrando _START_ a _END_ de _TOTAL_ entradas",
-          "infoEmpty": "Mostrando 0 a 0 de 0 entradas",
-          "infoFiltered": "(filtrado de _MAX_ entradas totales)",
-          "lengthMenu": "Mostrar _MENU_ entradas",
+          "info": "Mostrando _START_ a _END_ de _TOTAL_ reportes",
+          "infoEmpty": "Mostrando 0 a 0 de 0 reportes",
+          "infoFiltered": "(filtrado de _MAX_ reportes totales)",
+          "lengthMenu": "Mostrar _MENU_ reportes",
           "loadingRecords": "Cargando...",
           "processing": "Procesando...",
           "search": "Buscar:",

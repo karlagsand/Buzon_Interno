@@ -88,19 +88,21 @@ footer p {
    ========================================================================== */
 .btn-access {
     width: 100%;
-    max-width: 300px;           /* Tamaño uniforme para todos los botones */
+    max-width: 300px;            /* Tamaño uniforme para todos los botones */
     padding: 0.75rem 1.5rem;     /* Padding uniforme */
-    font-size: 1rem;            /* Tamaño de fuente uniforme */
+    font-size: 1rem;             /* Tamaño de fuente uniforme */
     text-decoration: none;
     text-align: center;
     border-radius: 4px;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
     display: inline-block;
     border: none;
     margin: 0;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 .btn-access:hover {
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    /* Sombra más notoria y ligero escalado */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
+    transform: scale(1.05);
 }
 /* Botón primario (azul) */
 .btn-primary {
@@ -208,8 +210,8 @@ footer p {
     margin-top: 2rem;
 }
 .table-container table {
-    width: 100%;        /* Se ajusta al 100% del contenedor para evitar scroll horizontal */
-    table-layout: auto;  /* Permite que las columnas se distribuyan automáticamente */
+    width: 100%;
+    table-layout: auto;
     font-size: 1rem;
     margin: 0 auto;
 }
@@ -217,7 +219,6 @@ footer p {
     text-align: center !important;
     vertical-align: middle;
 }
-/* Columnas con contenido extenso */
 .col-descripcion {
     width: 30%;
     max-width: 300px;
@@ -230,7 +231,6 @@ footer p {
     word-wrap: break-word;
     white-space: normal;
 }
-/* Efecto hover en imágenes */
 .img-thumbnail {
     transition: transform 0.3s ease-in-out;
     cursor: pointer;
@@ -238,7 +238,6 @@ footer p {
 .img-thumbnail:hover {
     transform: scale(1.2);
 }
-/* Modal fullscreen para imágenes */
 .modal-fullscreen {
     width: 100vw;
     height: 100vh;
@@ -253,3 +252,119 @@ footer p {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
 }
+
+/* ==========================================================================
+   9. PANEL VIEW EXCLUSIVO
+   ========================================================================== */
+.panel-container {
+    max-width: 100% !important;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 0; /* Se eliminan los paddings laterales para alinear la tabla y controles */
+}
+.panel-container .dataTables_wrapper {
+    padding-left: 0;
+    padding-right: 0;
+}
+.panel-container .table-container table {
+    border-collapse: collapse;
+    width: 100%;
+    table-layout: auto;
+}
+.panel-container .table-container thead th {
+    background-color: #0d2632 !important;
+    color: white !important;
+    text-align: center;
+    padding: 12px;
+}
+.panel-container .table-container tbody td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 10px;
+}
+.panel-container .col-descripcion {
+    width: 30%;
+    max-width: 300px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+.panel-container .col-usuario {
+    width: 20%;
+    max-width: 200px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+.panel-container #exportExcel {
+    background-color: #0d2632 !important;
+    color: white !important;
+    border: none;
+}
+.panel-container #exportExcel:hover {
+    background-color: #04131f !important;
+}
+.panel-container .btn-danger {
+    background-color: #6c757d !important;
+    border: none;
+}
+.panel-container .btn-danger:hover {
+    background-color: #5a6268 !important;
+}
+.panel-container .d-flex.justify-content-end {
+    display: flex;
+    gap: 10px;
+}
+
+/* ==========================================================================
+   10. SOBRESCRIBIR ESTILOS PARA LA VISTA DEL PANEL
+   ========================================================================== */
+.container.main-content.panel-container {
+    max-width: 1200px !important;
+    margin: 0 auto !important;
+    padding: 2rem 0 !important;
+    text-align: left !important;
+}
+.container.main-content.panel-container .dataTables_wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+}
+#confirmationModal .modal-header {
+    background-color: #0d2632 !important;
+}
+
+
+
+#reportTable tbody tr:hover td {
+    background-color: #ced4da !important;
+}
+
+
+/* ==========================================================================
+   11. ESTILOS EXCLUSIVOS PARA EL INDEX
+   ========================================================================== */
+/* Fondo gris para la página principal */
+.index-page-bg {
+    background-color: #e0e0e0; /* Gris claro */
+}
+
+/* Ajustar .container.main-content en el index */
+.index-container {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-align: center; /* Centra el contenido dentro de la sección */
+}
+
+/* Contenedor de botones en blanco, centrado y con bordes */
+.index-btn-container {
+    background-color: #fff !important;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 2rem auto !important;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: block; /* Forzamos el display block */
+}
+
