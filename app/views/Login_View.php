@@ -21,7 +21,7 @@
       <div class="login-container">
         <h2 class="text-center">Iniciar Sesión</h2>
         <?php if (isset($_GET['error'])): ?>
-          <div class="alert alert-danger">Credenciales incorrectas. Intenta de nuevo.</div>
+          <div class="alert alert-danger">Credenciales incorrectas. Verifique su información e intente de nuevo.</div>
         <?php endif; ?>
         <form action="../../app/controllers/Login_Controller.php" method="POST">
           <div class="mb-3">

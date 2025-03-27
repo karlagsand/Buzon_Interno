@@ -2,7 +2,7 @@
 // ExportarReporte_Controller.php
 
 require_once __DIR__ . '/../../config/conexion.php';
-require_once __DIR__ . '/../../vendor/autoload.php'; // Asegúrate de que esta ruta sea correcta
+require_once __DIR__ . '/../../vendor/autoload.php'; 
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -28,7 +28,7 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->setTitle('Reportes');
 
-// 1. Fila de título (fila 1): fondo azul (#0d2632), texto blanco y centrado
+// 1. Fila de título 
 $title = "Reportes del Buzón Interno de la Dirección de Operación";
 $sheet->mergeCells('A1:G1');
 $sheet->setCellValue('A1', $title);
@@ -41,7 +41,7 @@ $titleStyle->getFill()->setFillType(Fill::FILL_SOLID)
 // Ajustar la altura de la fila de título
 $sheet->getRowDimension(1)->setRowHeight(30);
 
-// 2. Fila de encabezados (fila 2): fondo gris (#6c757d), texto blanco, centrado y con bordes
+// 2. Fila de encabezados 
 $headers = ['Folio', 'Tipo de Reporte', 'Descripción', 'Imagen', 'Estado', 'Usuario', 'Teléfono'];
 $col = 'A';
 foreach ($headers as $header) {
@@ -70,7 +70,7 @@ foreach ($reportes as $row) {
     $rowNumber++;
 }
 
-// 4. Aplicar bordes a todas las celdas de la tabla (desde la fila 1 hasta la última)
+// 4. Aplicar bordes a todas las celdas de la tabla
 $lastRow = $rowNumber - 1;
 $allRange = "A1:G" . $lastRow;
 $sheet->getStyle($allRange)->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
@@ -88,3 +88,4 @@ $writer = new Xlsx($spreadsheet);
 $writer->save("php://output");
 exit;
 ?>
+

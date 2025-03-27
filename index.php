@@ -16,11 +16,9 @@
   </header>
 
   <main class="flex-grow-1">
-    <!-- Agregamos "index-container" junto a "container main-content" -->
     <div class="container main-content index-container">
       <h1>Buzón Interno de la Dirección de Operación</h1>
       <h4>“Tu participación cuenta”</h4>
-      <!-- Agregamos "index-btn-container" a la "btn-container" -->
       <div class="btn-container center equal index-btn-container">
         <div class="btn-row list">
           <a href="app/views/Formulario_View.php?area=Guardia Nacional" class="btn-access btn-primary btn-index">Guardia Nacional</a>
